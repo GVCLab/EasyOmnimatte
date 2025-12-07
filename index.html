@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- 适配移动端 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EasyOmnimatte: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition</title>
+
+  <!-- 引入Google Fonts和FontAwesome图标库 -->
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- 基础样式 --- */
+    body {
+      font-family: 'Google Sans', sans-serif;
+      background-color: #f7f9fb;
+      color: #333;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1000px; /* 限制最大宽度，保持阅读体验 */
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    /* --- 标题与作者部分 --- */
+    .header-section {
+      text-align: center;
+      padding: 40px 0;
+    }
+    
+    h1.title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .authors {
+      font-size: 1.2rem;
+      color: #0066cc;
+    }
+    .authors a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .authors a:hover { text-decoration: underline; }
+
+    .affiliations {
+      font-size: 1rem;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    /* --- 链接按钮 --- */
+    .link-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background-color: #363636;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+    .btn i { margin-right: 8px; }
+    .btn:hover { background-color: #555; }
+
+    /* --- 章节通用样式 --- */
+    .section {
+      padding: 30px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    /* --- Teaser (首页大图/视频) --- */
+    .teaser-video {
+      width: 100%;
+      border-radius: 10px;
+      outline: none;
+    }
+    
+    /* --- 核心功能：视频网格展示 --- */
+    .video-grid {
+      display: grid;
+      /* 强制两列：1fr 1fr。如果想一行三个，改成 repeat(3, 1fr) */
+      grid-template-columns: repeat(1, 1fr); 
+      gap: 25px; /* 间距稍微加大一点 */
+      margin-top: 20px;
+    }
+
+    /* 手机端适配：在手机上强制变成单列，否则两列太小看不清 */
+    @media (max-width: 768px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .video-wrapper {
+      background: #f0f0f0;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      /* 增加阴影让大视频更有质感 */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    }
+
+    /* --- 展开更多按钮样式 --- */
+    .show-more-container {
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+    
+    .toggle-btn {
+      background-color: #f1f3f4;
+      border: 1px solid #dadce0;
+      color: #202124;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .toggle-btn:hover {
+      background-color: #e8eaed;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.3);
+    }
+
+    /* 默认隐藏额外的视频 */
+    #extra-videos {
+      display: none; 
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .video-caption {
+      text-align: center;
+      padding: 8px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #555;
+    }
+
+    /* --- 文本块 --- */
+    .content-block {
+      text-align: justify;
+      font-size: 1.1rem;
+      margin: 0 20px;
+    }
+
+    /* --- BibTeX --- */
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      font-family: monospace;
+    }
+
+    /* --- 底部 --- */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+
+
+    /* --- 轮播图 (Carousel) 容器样式 --- */
+    .carousel-container {
+      position: relative;
+      max-width: 800px; /* 限制轮播图最大宽度，可自行调整 */
+      margin: 0 auto;   /* 居中 */
+      overflow: hidden; /* 隐藏溢出的部分 */
+      border-radius: 10px;
+      background: #000; /* 视频背景通常用黑色 */
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* 轨道：包含所有幻灯片的长条 */
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+      width: 100%;
+    }
+
+    /* 单个幻灯片 */
+    .carousel-slide {
+      min-width: 100%; /* 每次只显示一个 */
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .carousel-slide video {
+      width: 100%;
+      display: block;
+      /* 保持视频比例 */
+      object-fit: contain; 
+      max-height: 500px; /* 限制最大高度，防止竖屏视频占满屏幕 */
+    }
+
+    .carousel-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    /* --- 左右导航按钮 --- */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.3);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      z-index: 10;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-btn:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #000;
+    }
+
+    .carousel-btn.prev { left: 15px; }
+    .carousel-btn.next { right: 15px; }
+
+    /* --- 底部指示点 (可选) --- */
+    .carousel-dots {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .dot {
+      height: 10px;
+      width: 10px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .dot.active {
+      background-color: #333;
+    }
+
+    /* --- Ablation 导航 (保持不变) --- */
+    .ablation-nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    .mask-btn {
+      cursor: pointer;
+      opacity: 0.6;
+      transition: 0.3s;
+      border: 3px solid transparent;
+      border-radius: 8px;
+      padding: 5px;
+      text-align: center;
+    }
+    .mask-btn:hover { opacity: 1; transform: translateY(-3px); }
+    .mask-btn.active { opacity: 1; border-color: #0066cc; background: #f0f7ff; }
+    .mask-btn img { height: 60px; display: block; margin: 0 auto; }
+
+    /* --- 新的网格布局：标签 + 场景1 + 场景2 --- */
+    .ablation-group {
+      display: none; /* 默认隐藏 */
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .ablation-group.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+
+    /* 顶部表头：空 + Scene 1 + Scene 2 */
+    .grid-header {
+      display: grid;
+      grid-template-columns: 40px 1fr 1fr; /* 对应下方的 row 结构 */
+      gap: 15px;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: #444;
+    }
+
+    /* 每一行：标签 + 视频 + 视频 */
+    .grid-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 1fr; /* 核心布局 */
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: center; /* 垂直居中 */
+    }
+
+    /* 竖向标签样式 */
+    .row-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      color: #555;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4f4f4;
+      border-radius: 4px;
+    }
+
+    .grid-row video {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- 1. 头部信息 -->
+  <div class="header-section">
+    <h1 class="title">EasyOmnimatte: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition</h1>
+    
+    <div class="authors">
+      <a href="#">Yihan Hu</a><sup>1</sup>, 
+      <a href="#">Xuelin Chen</a><sup>2</sup>, 
+      <a href="#">Xiaodong Cun</a><sup>1</sup>
+    </div>
+
+    <div class="affiliations">
+      <sup>1</sup>Great Bay University, <sup>2</sup>Adobe
+    </div>
+
+    <!-- 各种链接按钮 -->
+    <div class="link-buttons">
+      <a href="#" class="btn"><i class="fas fa-file-pdf"></i> Paper</a>
+      <a href="#" class="btn"><i class="fab fa-arxiv"></i> ArXiv</a>
+      <a href="#" class="btn"><i class="fab fa-github"></i> Code</a>
+    </div>
+  </div>
+
+    <!-- 轮播图展示部分 -->
+  <div class="section">
+    <h2 class="section-title">Gallery Results</h2>
+    <div class="content-block" style="text-align: center; margin-bottom: 20px;">
+      <p>Click the arrows to browse through different scenarios.</p>
+    </div>
+
+    <!-- 轮播组件主体 -->
+    <div class="carousel-container">
+      
+      <!-- 左按钮 -->
+      <button class="carousel-btn prev" onclick="moveSlide(-1)">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <!-- 轨道：在这里添加你的视频 -->
+      <div class="carousel-track" id="track">
+        <!-- Slide 2 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/truck-water/layer_vis_t.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Single Layer Omnimatte</div>
+        </div>
+
+        <!-- Slide 1 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/drift-chicane/layer_vis.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Single Layer Omnimatte</div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/kite-surf/layer_vis.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Single Layer Omnimatte</div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/animator-draw/layer_vis_t.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Single Layer Omnimatte</div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/davis_kite-walk/layer_vis_t.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Multi Layer Omnimatte</div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/stroller/layer_vis_t.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Multi Layer Omnimatte</div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/crossing/layer_vis_t.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Multi Layer Omnimatte</div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="carousel-slide">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/layer_visualization/boxing-fisheye/layer_vis_t.mp4" type="video/mp4">
+          </video>
+          <div class="carousel-caption">Multi Layer Omnimatte</div>
+        </div>
+
+
+      </div>
+
+      <!-- 右按钮 -->
+      <button class="carousel-btn next" onclick="moveSlide(1)">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- 指示点 (根据视频数量增减) -->
+    <div class="carousel-dots" id="carousel-dots">
+      <span class="dot active" onclick="currentSlide(0)"></span>
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
+      <span class="dot" onclick="currentSlide(4)"></span>
+      <span class="dot" onclick="currentSlide(5)"></span>
+      <span class="dot" onclick="currentSlide(6)"></span>
+      <span class="dot" onclick="currentSlide(7)"></span>
+    </div>
+
+  </div>
+
+  <!-- 3. 摘要 -->
+  <div class="section">
+    <h2 class="section-title">Abstract</h2>
+    <div class="content-block">
+      <p>
+        Existing video omnimatte methods typically rely on slow, multi-stage, or inference-time optimization pipelines that fail to fully exploit powerful generative priors, producing suboptimal decompositions. Our key insight is that, if a video inpainting model can be finetuned to remove the foreground-associated effects, then it must be inherently capable of perceiving these effects, and hence can also be finetuned for the complementary task: foreground layer decomposition with associated effects. However, although naïvely finetuning the inpainting model with LoRA applied to all blocks can produce high-quality alpha mattes, it fails to capture associated effects. Our systematic analysis reveals this arises because effect-related cues are primarily encoded in specific DiT blocks and become suppressed when LoRA is applied across all blocks. To address this, we introduce EasyOmnimatte, the first unified, end-to-end video omnimatte method. Concretely, we finetune a pretrained video inpainting diffusion model to learn dual complementary experts while keeping its original weights intact: an Effect Expert, where LoRA is applied only to effect-sensitive DiT blocks to capture the coarse structure of the foreground and associated effects, and a fully LoRA-finetuned Quality Expert learns to refine the alpha matte. During sampling, Effect Expert is used for denoising at early, high-noise steps, while Quality Expert takes over at later, low-noise steps. This design eliminates the need for two full diffusion passes, significantly reducing computational cost without compromising output quality. Ablation studies validate the effectiveness of this Dual-Expert strategy. Experiments demonstrate that EasyOmnimatte sets a new state-of-the-art for video omnimatte and enables various downstream tasks, significantly outperforming baselines in both quality and efficiency.
+      </p>
+    </div>
+  </div>
+
+  <!-- 4. 方法介绍 (图片) -->
+  <div class="section">
+    <h2 class="section-title">Method</h2>
+    <div style="text-align: center;">
+      <!-- 占位图片，请替换为 static/images/pipeline.png -->
+      <img src="static/images/pipeline_v2.jpg" alt="Method" style="max-width: 100%; border-radius: 8px;">
+    </div>
+    <div class="content-block" style="margin-top: 15px;">
+      <p>
+        a) We branch out LoRA-finetuned blocks from the original inpainting DiT blocks to jointly predict the alpha matte, alongside the pretrained model. In each Branch DiT Block, LoRA are applied only to the duplicated set of input tokens, leaving the original inpainting branch unaffected. b) During sampling, the Effect Expert model is only employed at early, high-noise stages to generate coarse, effect-aware omnimatte predictions, while the Quality Expert model refines the alpha matte only at later, low-noise stages. This alternating strategy achieves high-quality results with greatly reduced compute cost, compared to individually sampling.
+      </p>
+    </div>
+  </div>  
+
+  <!-- 2. Teaser (核心展示视频) -->
+  <div class="section">
+    <!-- 
+      注意：autoplay loop muted playsinline 是为了让视频像GIF一样自动播放 
+      playsinline 是iOS设备必须的
+    -->
+    <video class="teaser-video" autoplay loop muted playsinline>
+      <!-- 这里放你的视频路径，先用网图占位 -->
+      <source src="static/videos/cvpr_supp_video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div style="text-align: center; margin-top: 10px; color: #555;">
+      <b>Figure 1.</b> EasyOmnimatte is the first, end-to-end video omnimatte method, eliminating the need for slow, multi-stage optimization-based pipelines (e.g., Gen-Omnimatte). EasyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds, representing significant gain over existing state-of-the-art methods in both quality and efficiency.
+    </div>
+  </div>
+
+  <!-- 5. 视频结果展示 -->
+  <div class="section">
+    <h2 class="section-title">Visual Comparisons</h2>
+    <p style="text-align: center; margin-bottom: 20px; color: #666;">
+      Click the button below to reveal more results.
+    </p>
+
+    <!-- 第一部分：初始显示的视频 (例如前4个) -->
+    <div class="video-grid">
+      
+      <!-- Video 1 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/animator-draw_resized.mp4" type="video/mp4">
+        </video>
+
+      </div>
+
+      <!-- Video 2 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/car-turn_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/truck-water_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 4 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/tennis_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+    </div> <!-- 初始网格结束 -->
+
+
+    <!-- 第二部分：隐藏的视频 (点击后显示) -->
+    <!-- 注意：这里再次使用 video-grid 类，是为了保持网格布局一致 -->
+    <div id="extra-videos" class="video-grid" style="margin-top: 25px;">
+      
+      <!-- 这里可以放剩下的 16 个视频 -->
+      
+      <!-- Video 5 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/boat_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 6 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/breakdance-flare_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+      
+      <!-- Video 7...20 (你可以一直复制上面的块) -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/car-roundabout_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/car-shadow_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 5 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/motorbike_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 6 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/cows_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+      
+      <!-- Video 7...20 (你可以一直复制上面的块) -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/davis_camel_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/drift-chicane_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 5 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/drift-turn_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 6 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/flamingo_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+      
+      <!-- Video 7...20 (你可以一直复制上面的块) -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/goat_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/hike_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 5 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/horsejump-high_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Video 6 -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/horsejump-low_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+      
+      <!-- Video 7...20 (你可以一直复制上面的块) -->
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/kite-surf_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+          <source src="static/videos/scooter-black_resized.mp4" type="video/mp4">
+        </video>
+      </div>
+
+    </div>
+
+    <!-- 按钮区域 -->
+    <div class="show-more-container">
+      <button class="toggle-btn" onclick="toggleVideos()" id="show-more-btn">
+        <i class="fas fa-chevron-down" style="margin-right: 8px;"></i> Show More Results
+      </button>
+    </div>
+
+  </div>
+
+  <div class="section">
+  <h2 class="section-title">Ablation Study</h2>
+  <p style="text-align: center; margin-bottom: 25px;">
+    Effectiveness of different attention masking strategies.
+  </p>
+
+  <!-- 1. 顶部导航 -->
+  <div class="ablation-nav">
+    <div class="mask-btn active" onclick="showAblation('set-a', this)">
+      <img src="static/images/type_a.png" alt="Mask A">
+      <div>Mask A</div>
+    </div>
+    <div class="mask-btn" onclick="showAblation('set-b', this)">
+      <img src="static/images/type_b.png" alt="Mask B">
+      <div>Mask B</div>
+    </div>
+    <div class="mask-btn" onclick="showAblation('set-c', this)">
+      <img src="static/images/type_c.png" alt="Mask C">
+      <div>Mask C</div>
+    </div>
+  </div>
+
+  <!-- 2. 内容区域 -->
+
+  <!-- === SET A (Mask A 对应的8个视频) === -->
+  <div id="set-a" class="ablation-group active">
+    
+    <!-- 表头 -->
+    <!-- <div class="grid-header">
+      <div></div>
+      <div>Scene 1</div>
+      <div>Scene 2</div>
+    </div> -->
+
+    <!-- Row 1: Input -->
+    <div class="grid-row">
+      <div class="row-label">Input Video</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_input.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_input.mp4"></video>
+    </div>
+
+    <!-- Row 2: Type 1 -->
+    <div class="grid-row">
+      <div class="row-label">Inpainting Background</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_bg_a.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_bg_a.mp4"></video>
+    </div>
+
+    <!-- Row 3: Type 2 -->
+    <div class="grid-row">
+      <div class="row-label">Effect Expert Only</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_effect_a.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_effect_a.mp4"></video>
+    </div>
+
+    <!-- Row 4: Ours -->
+    <div class="grid-row">
+      <div class="row-label">Quality Expert Only</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_quality_a.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_quality_a.mp4"></video>
+    </div>
+
+  </div>
+
+  <!-- === SET B (Mask B 对应的8个视频) === -->
+  <div id="set-b" class="ablation-group">
+    <!-- <div class="grid-header">
+      <div></div>
+      <div>Scene 1</div>
+      <div>Scene 2</div>
+    </div> -->
+
+    <!-- Row 1: Input -->
+    <div class="grid-row">
+      <div class="row-label">Input Video</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_input.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_input.mp4"></video>
+    </div>
+
+    <!-- Row 2: Type 1 -->
+    <div class="grid-row">
+      <div class="row-label">Inpainting Background</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_bg_b.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_bg_b.mp4"></video>
+    </div>
+
+    <!-- Row 3: Type 2 -->
+    <div class="grid-row">
+      <div class="row-label"  style="color: #008000;">Effect Expert</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_effect_b.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_effect_b.mp4"></video>
+    </div>
+
+    <!-- Row 4: Ours -->
+    <div class="grid-row">
+      <div class="row-label">Quality Expert</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_quality_b.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_quality_b.mp4"></video>
+    </div>
+
+  </div>
+
+  <!-- === SET C (同理) === -->
+  <div id="set-c" class="ablation-group">
+     
+    <!-- Row 1: Input -->
+    <div class="grid-row">
+      <div class="row-label">Input Video</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_input.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_input.mp4"></video>
+    </div>
+
+    <!-- Row 2: Type 1 -->
+    <div class="grid-row">
+      <div class="row-label">Inpainting Background</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_bg_c.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_bg_c.mp4"></video>
+    </div>
+
+    <!-- Row 3: Type 2 -->
+    <div class="grid-row">
+      <div class="row-label">Effect Expert</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_effect_c.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_effect_c.mp4"></video>
+    </div>
+
+    <!-- Row 4: Ours -->
+    <div class="grid-row">
+      <div class="row-label" style="color: #008000;">Quality Expert</div>
+      <video autoplay loop muted playsinline src="static/videos/scene1_quality_c.mp4"></video>
+      <video autoplay loop muted playsinline src="static/videos/scene2_quality_c.mp4"></video>
+    </div>
+
+  </div>
+
+  <p style="text-align: center; margin-bottom: 25px;">
+    Ablation of Branch DiT Placement & Dual Expert Strategy.
+  </p>
+
+  <div class="comparison-container">
+    <!-- 直接复用 .three-col-grid 类 -->
+      
+    <div class="grid-header">
+      <div></div>
+      <div>RGBA Video</div>
+      <div>Alpha Matte</div>
+    </div>
+
+    <!-- 修改左侧标签 -->
+    <div class="grid-row">
+      <div class="row-label">Input Videos & Masks</div>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_input_video.mp4"></video>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_input_mask.mp4"></video>
+    </div>
+
+    <!-- Ours 依然可以用绿色高亮 -->
+    <div class="grid-row">
+      <div class="row-label">Branch DiT only in <i>Initial Stage</i></div>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_initial_rgba.mp4"></video>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_initial_matte.mp4"></video>
+    </div>
+
+    <!-- Ours 依然可以用绿色高亮 -->
+    <div class="grid-row">
+      <div class="row-label">Branch DiT only in <i>Middle Stage</i></div>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_middle_rgba.mp4"></video>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_middle_matte.mp4"></video>
+    </div>
+
+    <!-- Ours 依然可以用绿色高亮 -->
+    <div class="grid-row">
+      <div class="row-label">Branch DiT only in <i>Final Stage</i><br> <b>(Effect Expert)</b></div>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_final_rgba.mp4"></video>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_final_matte.mp4"></video>
+    </div>
+
+    <!-- Ours 依然可以用绿色高亮 -->
+    <div class="grid-row">
+      <div class="row-label"><b>Quality Expert</b></div>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_quality_rgba.mp4"></video>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_quality_matte.mp4"></video>
+    </div>
+
+    <!-- Ours 依然可以用绿色高亮 -->
+    <div class="grid-row">
+      <div class="row-label">Full Method</div>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_full_rgba.mp4"></video>
+      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_full_matte.mp4"></video>
+    </div>
+
+</div>
+
+  <!-- 6. BibTeX -->
+  <div class="section">
+    <h2 class="section-title">Citation</h2>
+    <div class="content-block">
+      <pre>
+      <!-- @inproceedings{yourname2024awesome,
+        title={Fast Awesome CVPR Work},
+        author={San, Zhang and Si, Li},
+        booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+        year={2024}
+      } -->
+      </pre>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Project page template inspired by <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.</p>
+</footer>
+
+</body>
+
+<script>
+  function toggleVideos() {
+    var extraDiv = document.getElementById("extra-videos");
+    var btn = document.getElementById("show-more-btn");
+    var icon = btn.querySelector("i");
+
+    if (extraDiv.style.display === "none" || extraDiv.style.display === "") {
+      // 展开操作
+      extraDiv.style.display = "grid"; // 注意这里要用 grid，保持网格布局
+      btn.innerHTML = '<i class="fas fa-chevron-up" style="margin-right: 8px;"></i> Show Less';
+    } else {
+      // 收起操作
+      extraDiv.style.display = "none";
+      btn.innerHTML = '<i class="fas fa-chevron-down" style="margin-right: 8px;"></i> Show More Results';
+      
+      // 可选：收起时自动滚动回“Visual Comparisons”标题处，体验更好
+      // document.querySelector('.section-title').scrollIntoView({behavior: 'smooth'});
+    }
+  }
+    // --- 新增：轮播图 (Carousel) 逻辑 ---
+  let slideIndex = 0;
+  const track = document.getElementById('track');
+  const slides = document.getElementsByClassName('carousel-slide');
+  const dots = document.getElementsByClassName('dot');
+
+  function updateCarousel() {
+    // 移动轨道
+    const width = slides[0].clientWidth;
+    track.style.transform = `translateX(-${slideIndex * 100}%)`;
+
+    // 更新下方小圆点状态
+    for (let i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+    }
+    if(dots[slideIndex]) {
+        dots[slideIndex].className += " active";
+    }
+  }
+
+  // 左右按钮点击触发
+  function moveSlide(n) {
+    slideIndex += n;
+    // 循环逻辑：如果超过最后一个，回到第一个；如果小于第一个，跳到最后一个
+    if (slideIndex >= slides.length) {
+      slideIndex = 0;
+    } else if (slideIndex < 0) {
+      slideIndex = slides.length - 1;
+    }
+    updateCarousel();
+  }
+
+  // 点击小圆点触发
+  function currentSlide(n) {
+    slideIndex = n;
+    updateCarousel();
+  }
+
+  // 窗口大小改变时重新计算位置（可选，防止错位）
+  window.addEventListener('resize', updateCarousel);
+
+  function showAblation(setId, btnElement) {
+    // 1. 按钮样式切换
+    var buttons = document.getElementsByClassName("mask-btn");
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove("active");
+    }
+    btnElement.classList.add("active");
+
+    // 2. 内容区域切换
+    // 隐藏所有组
+    var groups = document.getElementsByClassName("ablation-group");
+    for (var i = 0; i < groups.length; i++) {
+      groups[i].classList.remove("active");
+      // 暂停隐藏的视频
+      var hiddenVideos = groups[i].getElementsByTagName("video");
+      for (var v = 0; v < hiddenVideos.length; v++) {
+        hiddenVideos[v].pause();
+      }
+    }
+
+    // 显示目标组
+    var targetGroup = document.getElementById(setId);
+    targetGroup.classList.add("active");
+
+    // 播放显示的视频
+    var visibleVideos = targetGroup.getElementsByTagName("video");
+    for (var v = 0; v < visibleVideos.length; v++) {
+      visibleVideos[v].play();
+    }
+  }
+</script>
+
+
+</html>
+
