@@ -20,11 +20,11 @@ GVC Lab, Great Bay University, Adobe Research
 
 ![Teaser Image](assets/Teaser.png)
 
-*Figure 1: asyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds, representing a significant gain over existing state-of-the-art methods in both quality and efficiency.
+* Figure 1: asyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds, representing a significant gain over existing state-of-the-art methods in both quality and efficiency.
 
 ![Compare Image](assets/compare.jpg)
 
-*Figure 2: EasyOmnimatte is the first, end-to-end video omnimatte method, eliminating the need for slow, multi-stage optimization-based pipelines.
+* Figure 2: EasyOmnimatte is the first, end-to-end video omnimatte method, eliminating the need for slow, multi-stage optimization-based pipelines.
 ---
 
 ### ✅ TODO List
