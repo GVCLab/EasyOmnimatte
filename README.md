@@ -21,11 +21,11 @@ GVC Lab, Great Bay University, Adobe Research
 这里展示了我们方法的一些定性结果 (Qualitative Results)：
 
 <!-- 这里的路径使用了相对路径，指向 assets 文件夹 -->
-![Teaser Image](assets/teaser.png)
+![Teaser Image](assets/Teaser.png)
 
 *Figure 1: Overall architecture of the proposed method / Or visualization comparison.*
 
-<!-- ![Demo GIF](assets/demo.gif) -->
+![Compare Image](assets/compare.png)
 
 ---
 
