@@ -20,7 +20,7 @@ GVC Lab, Great Bay University, Adobe Research
 
 ![Teaser Image](assets/Teaser.png)
 
-* Figure 1: asyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds, representing a significant gain over existing state-of-the-art methods in both quality and efficiency.
+* Figure 1: EasyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds, representing a significant gain over existing state-of-the-art methods in both quality and efficiency.
 
 ![Compare Image](assets/compare.jpg)
 
