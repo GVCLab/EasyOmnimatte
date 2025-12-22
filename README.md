@@ -10,14 +10,6 @@ GVC Lab, Great Bay University, Adobe Research
 
 ---
 
-<div align="center">
-  <a href="https://arxiv.org/abs/23xx.xxxxx"><strong>[Paper]</strong></a> | 
-  <a href="https://yihanhu-2022.github.io/easyomnimatte-project/"><strong>[Project Page]</strong></a> | 
-  <a href="#bibtex"><strong>[BibTeX]</strong></a>
-</div>
-
----
-
 ### 📢 News
 - **[2025-12-07]**: The paper is currently under review. Code will be released soon!
 - **[2025-12-01]**: We have released the arXiv version.
