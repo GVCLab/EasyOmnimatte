@@ -5,7 +5,7 @@
 [![Project Page](https://img.shields.io/badge/Project-Website-blue)]([https://your-username.github.io/project-page/](https://yihanhu-2022.github.io/easyomnimatte-project/))
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Yihan Hu**, **Xuelin Chen**, **Xiaodong Cun**...
+**Yihan Hu**, **Xuelin Chen**, **Xiaodong Cun**
 
 GVC Lab, Great Bay University, Adobe Research
 
