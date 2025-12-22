@@ -1,6 +1,5 @@
 # EasyOmnimatte: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition
 
-<!-- 这里是一些漂亮的徽章，显得项目很专业 -->
 [![arXiv](https://img.shields.io/badge/arXiv-23xx.xxxxx-b31b1b.svg)](https://arxiv.org/abs/23xx.xxxxx)
 [![Project Page](https://img.shields.io/badge/Project-Website-blue)]([https://your-username.github.io/project-page/](https://yihanhu-2022.github.io/easyomnimatte-project/))
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,7 +10,6 @@ GVC Lab, Great Bay University, Adobe Research
 
 ---
 
-<!-- 核心链接区：对应您刚才问的按钮功能 -->
 <div align="center">
   <a href="https://arxiv.org/abs/23xx.xxxxx"><strong>[Paper]</strong></a> | 
   <a href="https://yihanhu-2022.github.io/easyomnimatte-project/"><strong>[Project Page]</strong></a> | 
@@ -35,7 +33,6 @@ GVC Lab, Great Bay University, Adobe Research
 
 *Figure 1: Overall architecture of the proposed method / Or visualization comparison.*
 
-<!-- 如果有动图，可以加在这里 -->
 <!-- ![Demo GIF](assets/demo.gif) -->
 
 ---
