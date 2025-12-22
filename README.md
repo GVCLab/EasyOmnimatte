@@ -18,15 +18,13 @@ GVC Lab, Great Bay University, Adobe Research
 
 ### 👀 Visualization Results
 
-这里展示了我们方法的一些定性结果 (Qualitative Results)：
-
-<!-- 这里的路径使用了相对路径，指向 assets 文件夹 -->
 ![Teaser Image](assets/Teaser.png)
 
-*Figure 1: Overall architecture of the proposed method / Or visualization comparison.*
+*Figure 1: asyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds, representing a significant gain over existing state-of-the-art methods in both quality and efficiency.
 
-![Compare Image](assets/compare.png)
+![Compare Image](assets/compare.jpg)
 
+*Figure 2: EasyOmnimatte is the first, end-to-end video omnimatte method, eliminating the need for slow, multi-stage optimization-based pipelines.
 ---
 
 ### ✅ TODO List
