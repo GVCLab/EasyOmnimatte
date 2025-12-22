@@ -5,7 +5,7 @@
 [![Project Page](https://img.shields.io/badge/Project-Website-blue)]([https://your-username.github.io/project-page/](https://yihanhu-2022.github.io/easyomnimatte-project/))
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**[Yihan Hu]**, **[Xuelin Chen]**, **[Xiaodong Cun]**...
+**Yihan Hu**, **Xuelin Chen**, **Xiaodong Cun**...
 
 GVC Lab, Great Bay University, Adobe Research
 
@@ -54,7 +54,7 @@ We are working on organizing the code. The following items will be released:
 
 ### 🚀 Getting Started (Coming Soon)
 
-This repository is the official implementation of **"[论文标题]"**. 
+This repository is the official implementation of **EasyOmnimatte: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition**. 
 
 The code is currently being organized and will be released upon acceptance. Please stay tuned!
 
