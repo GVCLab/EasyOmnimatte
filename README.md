@@ -58,21 +58,5 @@ This repository is the official implementation of **EasyOmnimatte: Taming Pretra
 
 The code is currently being organized and will be released upon acceptance. Please stay tuned!
 
-<!-- 这是一个占位符，等代码上传后再取消注释
-```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-pip install -r requirements.txt
--->
-📝 <a name="bibtex"></a>BibTeX
-If you find our work useful for your research, please consider citing:
-code
-Bibtex
-@article{yourname2023title,
-  title={Your Paper Title Here},
-  author={Lastname, Firstname and Lastname, Firstname},
-  journal={arXiv preprint arXiv:23xx.xxxxx},
-  year={2023}
-}
-📧 Contact
-If you have any questions, please feel free to email [your_email@example.com].
+### 📧 Contact
+If you have any questions, please feel free to email [18281128hyh@gmail.com].
