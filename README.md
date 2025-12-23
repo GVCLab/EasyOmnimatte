@@ -4,7 +4,7 @@
 [![Project Page](https://img.shields.io/badge/Project-Website-blue)](https://yihanhu-2022.github.io/easyomnimatte-project/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Yihan Hu<sup>1</sup>**, **[Xuelin Chen](https://xuelin-chen.github.io/)<sup>2</sup>**, **[Xiaodong Cun](https://vinthony.github.io/academic/)<sup>1, 📮</sup>**
+**Yihan Hu<sup>1</sup>**, **[Xuelin Chen](https://xuelin-chen.github.io/)<sup>2</sup>** and **[Xiaodong Cun](https://vinthony.github.io/academic/)<sup>1, 📮</sup>**
 
 <sup>1</sup>[GVC Lab, Great Bay University](https://gvclab.github.io/), <sup>2</sup>Adobe Research
 
