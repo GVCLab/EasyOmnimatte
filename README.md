@@ -8,14 +8,8 @@
 
 <sup>1</sup>[GVC Lab, Great Bay University](https://gvclab.github.io/), <sup>2</sup>Adobe Research
 
----
 
-### 📢 News
-- **[2025-12-25]**: We have released the arXiv version.
-
----
-
-### TL:DR; EasyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds in an <i>end-to-end</i> fashion.
+<b>TL:DR; EasyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds in an <i>end-to-end</i> fashion.</b>
 
 ![My Movie 3](https://github.com/user-attachments/assets/03402fbd-63f3-4b74-a967-17612e3810b6)
 
@@ -38,8 +32,6 @@ We are working on organizing the code. The following items will be released:
 ---
 
 ### 🚀 Getting Started (Coming Soon)
-
-This repository is the official implementation of **EasyOmnimatte: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition**. 
 
 The code is currently being organized and will be released upon acceptance. Please stay tuned!
 
