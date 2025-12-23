@@ -13,7 +13,7 @@
 
 ![My Movie 3](https://github.com/user-attachments/assets/03402fbd-63f3-4b74-a967-17612e3810b6)
 
-![Teaser Image](assets/Teaser.png)
+<!--![Teaser Image](assets/Teaser.png)-->
 
 ![Compare Image](assets/compare.jpg)
 
