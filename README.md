@@ -9,9 +9,10 @@
 <sup>1</sup>[GVC Lab, Great Bay University](https://gvclab.github.io/), <sup>2</sup>Adobe Research
 
 
+![My Movie 3](https://github.com/user-attachments/assets/03402fbd-63f3-4b74-a967-17612e3810b6)
+
 <b> TL;DR: EasyOmnimatte splits videos into layers (with effects) using 2-step diffusion <i> without any post optimization</i>. </b>
 
-![My Movie 3](https://github.com/user-attachments/assets/03402fbd-63f3-4b74-a967-17612e3810b6)
 
 <!--![Teaser Image](assets/Teaser.png)-->
 
