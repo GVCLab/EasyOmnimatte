@@ -1,6 +1,6 @@
 # EasyOmnimatte: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition
 
-[![arXiv](https://img.shields.io/badge/arXiv-23xx.xxxxx-b31b1b.svg)](https://arxiv.org/abs/23xx.xxxxx)
+[![arXiv](https://img.shields.io/badge/arXiv-2512.21865-b31b1b.svg)](https://arxiv.org/abs/2512.21865)
 [![Project Page](https://img.shields.io/badge/Project-Website-blue)](https://yihanhu-2022.github.io/easyomnimatte-project/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
